@@ -26,7 +26,7 @@ def normalizeString(string):
 
 # 装载数据
 def loadSentenceAndLabel(file_path, label):
-    with open(file_path, 'r') as fin:
+    with open(file_path, "r", encoding="utf-8") as fin:
         sentence_list = fin.readlines()
         normalize_sentence_list = [normalizeString(sentence.strip()) for sentence in sentence_list]
         label_list = [label for _ in normalize_sentence_list]
@@ -85,21 +85,21 @@ def splitData(data_ndarry, class_ndarry, valid_percentage):
     return train_x_ndarray, train_y_ndarray, valid_x_ndarray, valid_y_ndarray
 
 # 生成batch
-def generateBatch(data_list, batch_size, epoch_count, is_shuffle=True):
-    data_ndarray = np.array(data_list)
-    data_size = len(data_list)
+def generateBatch(data_ndarray, batch_size, epoch_count, is_shuffle=True):
+    data_size = len(data_ndarray)
+    print(data_size)
     batch_count_per_epoch = int((len(data_ndarray)-1)/batch_size) + 1
     for epoch in range(epoch_count):
         # 是否全排列，得到一个新的列表
         if is_shuffle:
             shuffle_indices = np.random.permutation(np.arange(data_size))
-            shuffled_data_list = data_ndarray[shuffle_indices]
+            shuffled_data_ndarray = data_ndarray[shuffle_indices]
         else:
-            shuffled_data_list = data_ndarray
+            shuffled_data_ndarray = data_ndarray
         for batch_index in range(batch_count_per_epoch):
             start_index = batch_index * batch_size
             end_index = min((batch_index + 1) * batch_size, data_size)
-            yield shuffled_data_list[start_index: end_index]
+            yield shuffled_data_ndarray[start_index: end_index]
 
 
 if __name__ == "__main__":
@@ -156,7 +156,10 @@ if __name__ == "__main__":
     all_class_ndarray = np.concatenate((class_ndarray_0, class_ndarray_1, class_ndarray_2, class_ndarray_3,
                                         class_ndarray_4, class_ndarray_5, class_ndarray_6, class_ndarray_7), 0)
     # 6)shuffle data
-    del all_sentence_list, all_label_list
+    del sentence_list_0, sentence_list_1, sentence_list_2, sentence_list_3,\
+        sentence_list_4, sentence_list_5, sentence_list_6, sentence_list_7, all_sentence_list,
+    del label_list_0, label_list_1, label_list_2, label_list_3,\
+        label_list_4, label_list_5, label_list_6, label_list_7, all_label_list
     shuffle_data_ndarray, shuffle_class_ndarray = shuffleData(all_data_ndarray, all_class_ndarray)
     # 7)split
     train_x_ndarry, train_y_ndarry, valid_x_ndarry, valid_y_ndarry = \
